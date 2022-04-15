@@ -1,0 +1,5 @@
+.App {
+    display: flex;
+    height: 100vh;
+    background-image: radial-gradient(circle at -14.09% 79.88%, #e3ffff 0, #b2f5ff 25%, #76cff6 50%, #22aadb 75%, #008bc5 100%);
+}
