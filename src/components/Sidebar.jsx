@@ -63,9 +63,9 @@ const Sidebar = () => {
                     </button>
                 </div> 
             </div>
-            <div className='sideba-filter-container'>
-                <div className='sideba-filterinput-container'>
-                    <MdSearch size={"1.4em"} className='sideba-search'/>
+            <div className='sidebar-filter-container'>
+                <div className='sidebar-filterinput-container'>
+                    <MdSearch size={"1.4em"} className='sidebar-search'/>
                     <input 
                         onKeyPress={(e) => {
                             if (e.key === 'Enter') {
