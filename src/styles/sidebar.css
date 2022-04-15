@@ -1,0 +1,112 @@
+.Sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: red;
+    width: 60%;
+    min-width: 8em;
+    margin: 1em;
+    border-radius: 0.5em;
+}
+
+.sidebar-info-container{
+    display: flex;
+    background-color: aquamarine;
+    border-radius: 0.5em;
+    margin: 0.3em;
+}
+
+.sidebar-filter-container{
+    display: flex;
+    justify-content: center;
+    background-color: blueviolet;
+    border-radius: 0.5em;
+    margin: 0em 0.3em;
+    margin-bottom: 0.3em;
+}
+
+.sidebar-contacts-container{
+    display: flex;
+    background-color: blue;
+    height: 100%;
+    border-radius: 0.5em;
+    margin: 0em 0.3em;
+    margin-bottom: 0.3em;
+}
+
+.sidebar-image-container{
+    display: flex;
+    width: 100%;
+}
+
+.sidebar-image-perfil{
+    width: 3em;
+    border-radius: 2em;
+    margin: 0.7em;
+}
+
+.sidebar-logout-container{
+    display: flex;
+    align-items: center;
+    border-radius: 0.5em;
+}
+
+.sidebar-chat-container{
+    display: flex;
+    align-items: center;
+    border-radius: 0.5em;
+}
+
+.sidebar-logout-button{
+    cursor: pointer;
+    width: 3.4em;
+    margin: 0.6em 0em;
+    border-radius: 2em;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.sidebar-chat-button{
+    cursor: pointer;
+    width: 3.4em;
+    margin: 0.6em 0em;
+    border-radius: 2em;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.sidebar-logout{
+    margin: 0.6em 0em;
+    margin-right: 0.6em;
+}
+
+.sidebar-chat{
+    margin: 0.6em 0em;
+}
+
+.sidebar-filterinput-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5em;
+    background-color: chartreuse;
+    margin: 0.3em;
+    width: 80%;
+}
+
+.sidebar-input-filter{
+    display: flex;
+    width: 100%;
+    outline: none;
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0.5em;
+}
+
+.sidebar-search{
+    margin-left: 0.5em;
+}
+
+.sidebar-close{
+    margin-right: 0.5em;
+    cursor: pointer;
+}

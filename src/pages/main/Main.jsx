@@ -1,13 +1,13 @@
 import React from 'react'
 import Chatbox from '../../components/Chatbox';
-import Siderbar from '../../components/Siderbar';
+import Sidebar from '../../components/Sidebar';
 import './main.css'
 
 const Main = () => {
     
     return (
         <div className='Main'>
-            <Siderbar/>
+            <Sidebar/>
             <Chatbox/>
         </div>
     )
