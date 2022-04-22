@@ -6,6 +6,7 @@ export const googleSignIn = () => async (dispatch) => {
 
   const provider = new GoogleAuthProvider();
   const userCredential = await signInWithPopup(auth, provider);
+  console.log(userCredential);
 
   const q = query(
     collection(db, 'users'),
@@ -44,7 +45,9 @@ export const googleSignIn = () => async (dispatch) => {
 export const getSession = (id) => async (dispatch) => {
   try {
     const userDocRef = doc(db, 'users', id);
+    console.log(userDocRef);
     const user = await getDoc(userDocRef);
+    console.log(user);
     dispatch({ type: 'LOGIN_USER', payload: user.data() });
   } catch (error) {
     throw error;
