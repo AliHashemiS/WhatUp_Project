@@ -20,6 +20,7 @@ function App() {
   const { getSession } = bindActionCreators(authActions, dispatch);
 
   useEffect(() => {
+    //console.log(user);
     user ? navigate("/whatup"): navigate("/")
   }, [navigate, user]);
 
@@ -28,6 +29,7 @@ function App() {
       setUnsubscribe(
         onAuthStateChanged(auth, (userCredentials) => {
           if (userCredentials) {
+            //console.log(userCredentials);
             getSession(userCredentials.uid);
           }
           setFirstLoad(true);
