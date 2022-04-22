@@ -8,3 +8,24 @@ body {
     margin: 0px;
     padding: 0px;
 }
+
+/* Works on Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(180, 180, 180) transparent;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 0.4em;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgb(180, 180, 180);
+    border-radius: 5em;
+    border: 0.2em solid transparent;
+}
