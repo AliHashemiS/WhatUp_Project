@@ -139,6 +139,12 @@
     color: white;
 }
 
+.chatbox-message-timer{
+    display: flex;
+    color: white;
+    font-size: 0.7em;
+}
+
 @media screen and (max-width: 760px) {
     .chatbox-chat{
         font-size: 10em;

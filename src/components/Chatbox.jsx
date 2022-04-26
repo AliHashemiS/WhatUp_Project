@@ -140,10 +140,11 @@ const Chatbox = () => {
                 <ScrollToBottom className='chatbox-scroll-container'>
                     {listMessage.map((message, index) => {
                         if(message.uid === userCredential.uid){
+                            //console.log(message.date);
                             return(
                                 <div key={index} className='chatbox-message-user'>
                                     {
-                                        typeof(message.message) === "string" ? (<span className='chatbox-message'>{message.message}</span>):
+                                        typeof(message.message) === "string" ? (<span className='chatbox-message'>{message.message}{/*<span className='chatbox-message-timer'>{message.date}</span>*/}</span>):
                                         (message.message.typeFile === "image" ? (<img className='chatbox-message-files' src={message.message.urlFile} alt=""></img>):
                                         (message.message.typeFile === "audio" ? (<audio className='chatbox-message-files' controls><source src={message.message.urlFile} type="audio/mpeg"/></audio>):
                                         (message.message.typeFile === "video" ? (<video width="320" height="240" controls><source src={message.message.urlFile} type="video/mp4"/></video>):
@@ -156,7 +157,7 @@ const Chatbox = () => {
                             return(
                                 <div key={index} className='chatbox-incoming-message-user'>
                                     {
-                                        typeof(message.message) === "string" ? (<span className='chatbox-message'>{message.message}</span>):
+                                        typeof(message.message) === "string" ? (<span className='chatbox-message-incoming'>{message.message}{/*<span className='chatbox-message-timer'>{message.date}</span>*/}</span>):
                                         (message.message.typeFile === "image" ? (<img className='chatbox-message-files' src={message.message.urlFile} alt=""></img>):
                                         (message.message.typeFile === "audio" ? (<audio className='chatbox-message-files' controls><source src={message.message.urlFile} type="audio/mpeg"/></audio>):
                                         (message.message.typeFile === "video" ? (<video width="320" height="240" controls><source src={message.message.urlFile} type="video/mp4"/></video>):
