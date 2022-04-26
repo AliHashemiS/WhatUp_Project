@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../styles/sidebar.css'
 import { MdLogout, MdSearch, MdClose } from "react-icons/md";
 import { ImUserPlus } from "react-icons/im"
@@ -15,7 +15,7 @@ const Sidebar = () => {
     const [searchValue, setSearchValue] = useState("");
     const [createChat, setCreateChat] = useState("transparent");
     const [listChats, setListChats] = useState([]);
-    const [listChatsRecover, setListChatsRecover] = useState([]);
+    //const [listChatsRecover, setListChatsRecover] = useState([]);
     const userCredential = useSelector((state) => state.auth.userCredentials);
 
     const navigate = useNavigate();
@@ -23,41 +23,39 @@ const Sidebar = () => {
     const { logout } = bindActionCreators(authActions, dispatch); 
     const { getChatUid } = bindActionCreators(chatActions, dispatch);
 
-    const onSearch = () => {
-        if(searchValue){
-            let listTemp = [];
-            setListChatsRecover(listChats);
-            listChats.forEach((data) => {
-                if(data.data().user1.uid === userCredential.uid){
-                    if(data.data().user2.name.toLowerCase().includes(searchValue.toLowerCase())){
-                        console.log(data.data().user2.name.toLowerCase());
-                        listTemp.push(data);
-                    }else if(data.data().user2.email.toLowerCase().includes(searchValue.toLowerCase())){
-                        console.log(data.data().user2.email.toLowerCase());
-                        listTemp.push(data);
-                    }
-                }else if(data.data().user2.uid === userCredential.uid){
-                    if(data.data().user1.name.toLowerCase().includes(searchValue.toLowerCase())){
-                        console.log(data.data().user1.name.toLowerCase());
-                        listTemp.push(data);
-                    }else if(data.data().user1.email.toLowerCase().includes(searchValue.toLowerCase())){
-                        console.log(data.data().user1.email.toLowerCase());
-                        listTemp.push(data);
-                    }
-                }
-            })
-            setListChats(listTemp);
-        }
-    }
+    useEffect(() => {
+        console.log(userCredential);
+    }, [userCredential]);
+
+    // const onSearch = () => {
+    //     if(searchValue){
+    //         let listTemp = [];
+    //         setListChatsRecover(listChats);
+    //         listChats.forEach((data) => {
+    //             if(data.data().user1.uid === userCredential.uid){
+    //                 if(data.data().user2.name.toLowerCase().includes(searchValue.toLowerCase())){
+    //                     listTemp.push(data);
+    //                 }else if(data.data().user2.email.toLowerCase().includes(searchValue.toLowerCase())){
+    //                     listTemp.push(data);
+    //                 }
+    //             }else if(data.data().user2.uid === userCredential.uid){
+    //                 if(data.data().user1.name.toLowerCase().includes(searchValue.toLowerCase())){
+    //                     listTemp.push(data);
+    //                 }else if(data.data().user1.email.toLowerCase().includes(searchValue.toLowerCase())){
+    //                     listTemp.push(data);
+    //                 }
+    //             }
+    //         })
+    //         setListChats(listTemp);
+    //     }
+    // }
 
     const onSearchUser = async () => {
         if(searchValue){
             const queryUser = query(collection(db, "users"), where("email", "==", searchValue));
             const response = await getDocs(queryUser);
-            console.log(response.size);
             response.forEach((doc) => {
                 onCreateChat(doc.data());
-                console.log("success");
                 toast.success("The chat was created successfully!");
             });
             if(response.size === 0) {
@@ -73,17 +71,14 @@ const Sidebar = () => {
         const response1 = await getDocs(queryChat1);
         const response2 = await getDocs(queryChat2);
         if(response1.size === 1){
-            console.log("response1");
             response1.forEach((doc) => {
                 getChatUid(doc.id);
             });
         } else if(response2.size === 1){
-            console.log("response2");
             response2.forEach((doc) => {
                 getChatUid(doc.id);
             });
         }else{
-            console.log("no exite chat");
             let chat = {
                 user1: userCredential,
                 user2: sender,
@@ -97,23 +92,23 @@ const Sidebar = () => {
     }
 
     const allChatUser = async () => {
+        console.log("cargar usuarios");
         const queryChat1 = query(collection(db, "chats"), where("user1.uid", "==", userCredential.uid));
         const queryChat2 = query(collection(db, "chats"), where("user2.uid", "==", userCredential.uid));
         const response1 = await getDocs(queryChat1);
         const response2 = await getDocs(queryChat2);
         let listContact = [];
         if(response1.size !== 0){
-            console.log("response1");
             response1.forEach((doc) => {
                 listContact.push(doc);
             });
         } 
         if(response2.size !== 0){
-            console.log("response2");
             response2.forEach((doc) => {
                 listContact.push(doc);
             });
         }
+        console.log("cargar usuarios");
         setListChats(listContact);
     }
 
@@ -126,7 +121,7 @@ const Sidebar = () => {
                 <div className='sidebar-chat-container'>
                     <button onClick={() => {
                                         if(createChat === "transparent"){
-                                            setCreateChat("rgb(185, 185, 185)");
+                                            setCreateChat("rgba(185, 185, 185, 0.3)");
                                             
                                         }else{
                                             setCreateChat("transparent");
@@ -134,47 +129,50 @@ const Sidebar = () => {
                                     }} 
                             className='sidebar-chat-button'
                             style={{backgroundColor:createChat}}>
-                        <ImUserPlus size={"1.4em"} className='sidebar-chat'/>
+                        <ImUserPlus className='sidebar-chat'/>
                     </button>
                 </div> 
                 <div className='sidebar-logout-container'>
-                    <button onClick={() => {
-                                        logout();
-                                        navigate("/");
-                                    }} 
-                            className='sidebar-logout-button'>
-                        <MdLogout size={"1.4em"} className='sidebar-logout'/>
-                    </button>
+                    <MdLogout onClick={() => {
+                            logout();
+                            navigate("/");
+                        }}  
+                    className='sidebar-logout'/>
                 </div> 
             </div>
-            <div className='sidebar-filter-container'>
-                <div className='sidebar-filterinput-container'>
-                    <MdSearch size={"1.4em"} className='sidebar-search'/>
-                    <input 
-                        onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                                if(createChat === "transparent"){
-                                    onSearch()
-                                }else{
-                                    onSearchUser();
-                                }     
-                            }
-                        }} 
-                        onChange={(e) => {
-                            setSearchValue(e.target.value);
-                            if(e.target.value === ""){
-                                setListChats(listChatsRecover);
-                            }
-                        }}
-                        value={searchValue} 
-                        placeholder="example@gmail.com"
-                        className='sidebar-input-filter'/>
-                    {searchValue ? (<MdClose onClick={() => {
-                        setListChats(listChatsRecover);
-                        setSearchValue("");
-                    }} size={"1.4em"} className='sidebar-close'/>):null}
+            {(createChat !== "transparent") ?
+            (<>
+                <div className='sidebar-filter-container'>
+                    <div className='sidebar-filterinput-container'>
+                        <MdSearch size={"1.4em"} className='sidebar-search'/>
+                        <input 
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    if(createChat === "transparent"){
+                                        //onSearch()
+                                    }
+                                    else{
+                                        onSearchUser();
+                                    }     
+                                }
+                            }} 
+                            onChange={(e) => {
+                                setSearchValue(e.target.value);
+                                // if(e.target.value === ""){
+                                //     setListChats(listChatsRecover);
+                                // }
+                            }}
+                            value={searchValue} 
+                            placeholder="example@gmail.com"
+                            className='sidebar-input-filter'/>
+                        {searchValue ? (<MdClose onClick={() => {
+                            //setListChats(listChatsRecover);
+                            setSearchValue("");
+                        }} size={"1.4em"} className='sidebar-close'/>):null}
+                    </div>
                 </div>
-            </div>
+            </>):(<></>)
+            }
             <div className='sidebar-contacts-container'>
                 {listChats.map((chat, index) => {
                     if(chat.data().user1.uid !== userCredential.uid){

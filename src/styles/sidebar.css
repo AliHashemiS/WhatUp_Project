@@ -71,20 +71,21 @@
     cursor: pointer;
     width: 3.4em;
     margin: 0.6em 0em;
-    border-radius: 2em;
+    border-radius: 1em;
     background-color: transparent;
     border-color: transparent;
 }
 
 .sidebar-logout{
-    margin: 0.6em 0em;
-    margin-right: 0.6em;
+    margin: 0.4em;
     color: white;
+    font-size: 1.4em;
 }
 
 .sidebar-chat{
     margin: 0.6em 0em;
     color: white;
+    font-size: 1.4em;
 }
 
 .sidebar-filterinput-container{
@@ -92,13 +93,19 @@
     justify-content: center;
     align-items: center;
     border-radius: 0.5em;
-    background-color: rgb(175, 175, 175);
+    background-color: rgba(175, 175, 175, 0.3);
+    color: white;
     margin: 0.3em;
     width: 90%;
 }
 
+::placeholder{
+    color: rgba(255, 255, 255, 0.5);
+}
+
 .sidebar-input-filter{
     display: flex;
+    color: white;
     width: 100%;
     outline: none;
     background-color: transparent;
@@ -113,4 +120,22 @@
 .sidebar-close{
     margin-right: 0.5em;
     cursor: pointer;
+}
+
+@media screen and (max-width: 760px) {
+    .sidebar-logout, .sidebar-chat {
+        font-size: 1em;
+    }
+    .sidebar-chat-button{
+        width: 1.6em;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .sidebar-logout, .sidebar-chat {
+        font-size: 1em;
+    }
+    .sidebar-chat-button {
+        width: 1.6em;
+    }
 }
