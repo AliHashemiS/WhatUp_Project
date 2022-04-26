@@ -27,6 +27,7 @@
 }
 
 .chatbox-form-container {
+    display: flex;
     margin: 0em 0.3em;
     margin-bottom: 0.3em;
 }
@@ -57,13 +58,21 @@
     color: white;
 }
 
+.chatbox-message-files{
+    margin: 0.5em;
+}
+
 .chatbox-form-div-container{
     display: flex;
-    background-color: rgb(175, 175, 175);
+    width: 100%;
+    background-color: rgba(175, 175, 175, 0.3);
     border-radius: 0.5em;
 }
 
 .chatbox-form-button{
+    display: flex;
+    margin: 0.3em;
+    align-items: center;
     background-color: transparent;
     border-color: transparent;
     cursor: pointer;
@@ -71,6 +80,7 @@
 
 .chatbox-form-input{
     display: flex;
+    color: white;
     width: 100%;
     outline: none;
     background-color: transparent;
@@ -78,7 +88,79 @@
     padding: 0.5em;
 }
 
+::placeholder{
+    color: rgba(255, 255, 255, 0.5);
+}
+
 .chatbox-scroll-container{
     width: 100%;
     height: 100%;
+}
+
+.chatbox-modal{
+    width: 100px;
+    height: 100px;
+}
+
+.chatbox-info-container-div-name{
+    display: flex;
+    align-items: center;
+}
+
+.chatbox-form-div{
+    display: flex;
+    width: 100%;
+    padding: 0.3em;
+    border-radius: 0.5em;
+    background-color: rgb(49, 74, 88);
+}
+
+.chatbox-send{
+    color: white;
+    font-size: 1.8em;
+}
+
+.chatbox-chat-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.chatbox-chat{
+    color: white;
+    font-size: 15em;
+}
+
+.chatbox-chat-text{
+    font-size: 3em; 
+    font-weight:"bold";
+    color: white;
+}
+
+@media screen and (max-width: 760px) {
+    .chatbox-chat{
+        font-size: 10em;
+    }
+    .chatbox-chat-text{
+        font-size: 2em; 
+    }
+    .chatbox-send {
+        font-size: 1.3em; 
+        margin: 0em;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .chatbox-chat{
+        font-size: 5em;
+    }
+    .chatbox-chat-text{
+        font-size: 1em; 
+    }
+    .chatbox-send {
+        font-size: 1.3em; 
+        margin: 0em;
+    }
 }
