@@ -80,12 +80,14 @@
     margin: 0.4em;
     color: white;
     font-size: 1.4em;
+    cursor: pointer;
 }
 
 .sidebar-chat{
     margin: 0.6em 0em;
     color: white;
     font-size: 1.4em;
+    cursor: pointer;
 }
 
 .sidebar-filterinput-container{
@@ -93,7 +95,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 0.5em;
-    background-color: rgba(175, 175, 175, 0.3);
+    background-color: rgba(158, 54, 54, 0.3);
     color: white;
     margin: 0.3em;
     width: 90%;
@@ -126,7 +128,7 @@
     .sidebar-logout, .sidebar-chat {
         font-size: 1em;
     }
-    .sidebar-chat-button{
+    .sidebar-chat-button {
         width: 1.6em;
     }
 }

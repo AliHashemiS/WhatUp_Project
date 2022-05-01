@@ -62,6 +62,7 @@ const Sidebar = () => {
                 toast.error("Error, the email does not exist!");
             }
             setCreateChat("transparent");
+            setSearchValue("");
         }
     }
 
@@ -140,38 +141,39 @@ const Sidebar = () => {
                     className='sidebar-logout'/>
                 </div> 
             </div>
-            {(createChat !== "transparent") ?
-            (<>
-                <div className='sidebar-filter-container'>
-                    <div className='sidebar-filterinput-container'>
-                        <MdSearch size={"1.4em"} className='sidebar-search'/>
-                        <input 
-                            onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                    if(createChat === "transparent"){
-                                        //onSearch()
+            {
+                (createChat !== "transparent") ?
+                (<>
+                    <div className='sidebar-filter-container'>
+                        <div className='sidebar-filterinput-container'>
+                            <MdSearch size={"1.4em"} className='sidebar-search'/>
+                            <input 
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        if(createChat === "transparent"){
+                                            //onSearch()
+                                        }
+                                        else{
+                                            onSearchUser();
+                                        }     
                                     }
-                                    else{
-                                        onSearchUser();
-                                    }     
-                                }
-                            }} 
-                            onChange={(e) => {
-                                setSearchValue(e.target.value);
-                                // if(e.target.value === ""){
-                                //     setListChats(listChatsRecover);
-                                // }
-                            }}
-                            value={searchValue} 
-                            placeholder="example@gmail.com"
-                            className='sidebar-input-filter'/>
-                        {searchValue ? (<MdClose onClick={() => {
-                            //setListChats(listChatsRecover);
-                            setSearchValue("");
-                        }} size={"1.4em"} className='sidebar-close'/>):null}
+                                }} 
+                                onChange={(e) => {
+                                    setSearchValue(e.target.value);
+                                    // if(e.target.value === ""){
+                                    //     setListChats(listChatsRecover);
+                                    // }
+                                }}
+                                value={searchValue} 
+                                placeholder="example@gmail.com"
+                                className='sidebar-input-filter'/>
+                            {searchValue ? (<MdClose onClick={() => {
+                                //setListChats(listChatsRecover);
+                                setSearchValue("");
+                            }} size={"1.4em"} className='sidebar-close'/>):null}
+                        </div>
                     </div>
-                </div>
-            </>):(<></>)
+                </>):(<></>)
             }
             <div className='sidebar-contacts-container'>
                 {listChats.map((chat, index) => {
