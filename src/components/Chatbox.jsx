@@ -1,10 +1,12 @@
-import { addDoc, collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { MdSend } from 'react-icons/md';
 import { FiPaperclip } from 'react-icons/fi';
 import { RiWechatLine } from "react-icons/ri";
+import { IoMdTimer } from "react-icons/io";
 import { useSelector } from 'react-redux';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import { AES, enc } from "crypto-js";
 
 import '../styles/chatbox.css'
 import Modals from './Modals';
@@ -13,20 +15,23 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 
 const Chatbox = () => {
     const [value, setValue] = useState("");
+    const [reminderBox, setReminderBox] = useState(false);
     const [listMessage, setlistMessage] = useState([]);
     const [sender, setSender] = useState();
     const [showModal, setShowModal] = useState(false);
     const [listFiles, setListFiles] = useState([]);
     const [listFilesSendURL, setListFilesSendURL] = useState([]);
+    const [listReminderMessage, setListReminderMessage] = useState([]);
     const [uploadValue, setUploadValue] = useState(0);
     const [messageFile, setMessageFile] = useState("");
+    const [timeReminder, setTimeReminder] = useState();
 
     const userCredential = useSelector((state) => state.auth.userCredentials);
     const docRef = useSelector((state) => state?.chat.chatCredentials);
 
+
     useEffect(() => {
         console.log("entro al useEffect");
-        //console.log(docRef.chat.data())
         console.log(listFiles.length);
         if(listFiles.length !== 0){
             let listTemp = [];
@@ -82,14 +87,47 @@ const Chatbox = () => {
         }
     }, [docRef, userCredential?.uid, listFiles, listFilesSendURL, uploadValue]);
 
+    useEffect(() => {
+        if(listReminderMessage.length !== 0){
+            console.log("entro al useEffect xd");
+            let timeRange;
+            let timeOut;  
+            let time =  new Date();    
+            listReminderMessage.forEach((reminderMsg) => {
+                timeRange = ((reminderMsg.date.seconds*1000) - time.getTime());
+                timeOut = setTimeout( async () => {
+
+                    const colRef = collection(docRef?.chatDocRef, "message");
+
+                    await setDoc(doc(colRef, reminderMsg.id), {
+                        message: reminderMsg.message,
+                        uid: userCredential?.uid,
+                        date: new Date().toISOString(),
+                        type: "string"
+                    });
+
+                    let db = collection(docRef?.chatDocRef, "reminder");
+                    await deleteDoc(doc(db, reminderMsg.id));
+                    setListReminderMessage([]);
+
+                }, timeRange);
+            }); 
+            return () => {clearTimeout(timeOut);}
+        }
+    }, [listReminderMessage, docRef?.chatDocRef, userCredential?.uid]);
+
     const onSend = async (e) => {
         e.preventDefault();
         if(value){       
-            const colRef = collection(docRef.chatDocRef, "message")
+            const colRef = collection(docRef?.chatDocRef, "message");
+
+            let encrypted = AES.encrypt(value, "E1F53135E559C253").toString();
+
             await addDoc(colRef, {
-                message: value,
+                message: encrypted,
                 uid: userCredential.uid,
                 date: new Date().toISOString(),
+                type: "string"
             });
         } 
         setValue("");
@@ -98,23 +136,51 @@ const Chatbox = () => {
     const onSendFiles = () => {
         if (listFilesSendURL.length !== 0){
             listFilesSendURL.forEach( async (file) => {
-                console.log("aaaaa");
-                console.log(file);
-                const colRef = collection(docRef.chatDocRef, "message");
+                const colRef = collection(docRef?.chatDocRef, "message");
+
+                let encrypted = AES.encrypt(JSON.stringify(file), "E1F53135E559C253").toString();
+
                 await addDoc(colRef, {
-                    message: file,
+                    message: encrypted,
                     uid: userCredential.uid,
                     date: new Date().toISOString(),
+                    type: "object"
                 });
             });
         }
         setListFilesSendURL([]);
     }
 
+    const onSendMessageReminder = async () => {
+        if(value){
+            const colRef = collection(docRef?.chatDocRef, "reminder");
+
+            let encrypted = AES.encrypt(value, "E1F53135E559C253").toString();
+
+            await addDoc(colRef, {
+                message: encrypted,
+                uid: userCredential.uid,
+                date: timeReminder,
+                type: "string"
+            });
+
+            
+            const unsubscribe = onSnapshot(collection(docRef?.chatDocRef, "reminder"), (snapshot) => {
+                let listTemp = [];
+                snapshot.docChanges().forEach((change) => {
+                    listTemp.push({...change.doc.data(), id:change.doc.id});
+                });
+                setListReminderMessage(listTemp);
+                setValue("");
+            });
+            return unsubscribe;
+        }
+    }
+
     return (
         <div className='Chatbox'>
             {docRef ? 
-            (<><Modals open={showModal} onClose={setShowModal} onSetFiles={setListFiles} uploadValue={uploadValue} messageFile={messageFile} onSendFiles={onSendFiles}/>
+            (<><Modals open={showModal} onClose={setShowModal} onSetFiles={setListFiles} uploadValue={uploadValue} messageFile={messageFile} onSendFiles={onSendFiles} functionReminder={onSendMessageReminder} dateReminder={setTimeReminder} reminder={reminderBox}/>
             <div className='chatbox-info-container'>
                 {(sender?.user1.uid === userCredential?.uid) ? (
                 <>
@@ -139,17 +205,26 @@ const Chatbox = () => {
             <div className='chatbox-container'>
                 <ScrollToBottom className='chatbox-scroll-container'>
                     {listMessage.map((message, index) => {
-                        if(message.uid === userCredential.uid){
-                            //console.log(message.date);
+
+                        var objectBytes = AES.decrypt(message.message, "E1F53135E559C253");
+                        let decrypted;
+
+                        if(message.type === "string"){
+                            decrypted = objectBytes.toString(enc.Utf8);
+                        }else{
+                            decrypted = JSON.parse(objectBytes.toString(enc.Utf8));
+                        }
+
+                        if(message.uid === userCredential.uid){              
                             return(
                                 <div key={index} className='chatbox-message-user'>
                                     {
-                                        typeof(message.message) === "string" ? (<span className='chatbox-message'>{message.message}{/*<span className='chatbox-message-timer'>{message.date}</span>*/}</span>):
-                                        (message.message.typeFile === "image" ? (<img className='chatbox-message-files' src={message.message.urlFile} alt=""></img>):
-                                        (message.message.typeFile === "audio" ? (<audio className='chatbox-message-files' controls><source src={message.message.urlFile} type="audio/mpeg"/></audio>):
-                                        (message.message.typeFile === "video" ? (<video width="320" height="240" controls><source src={message.message.urlFile} type="video/mp4"/></video>):
-                                        (<object className='chatbox-message-files' data={message.message.urlFile} type="application/pdf" width="320" height="240">
-                                        <p>Alternative text - include a link <a href={message.message.urlFile}>to the PDF!</a></p></object>))))
+                                        (message.type === "string") ? (<span className='chatbox-message'>{decrypted}{/*<span className='chatbox-message-timer'>{message.date}</span>*/}</span>):
+                                        (decrypted.typeFile === "image" ? (<img className='chatbox-message-files' src={decrypted.urlFile} alt=""></img>):
+                                        (decrypted.typeFile === "audio" ? (<audio className='chatbox-message-files' controls><source src={decrypted.urlFile} type="audio/mpeg"/></audio>):
+                                        (decrypted.typeFile === "video" ? (<video width="320" height="240" controls><source src={decrypted.urlFile} type="video/mp4"/></video>):
+                                        (<object className='chatbox-message-files' data={decrypted.urlFile} type="application/pdf" width="320" height="240">
+                                        <p>Alternative text - include a link <a href={decrypted.urlFile}>to the PDF!</a></p></object>))))
                                     }
                                 </div>
                             )
@@ -157,12 +232,12 @@ const Chatbox = () => {
                             return(
                                 <div key={index} className='chatbox-incoming-message-user'>
                                     {
-                                        typeof(message.message) === "string" ? (<span className='chatbox-message-incoming'>{message.message}{/*<span className='chatbox-message-timer'>{message.date}</span>*/}</span>):
-                                        (message.message.typeFile === "image" ? (<img className='chatbox-message-files' src={message.message.urlFile} alt=""></img>):
-                                        (message.message.typeFile === "audio" ? (<audio className='chatbox-message-files' controls><source src={message.message.urlFile} type="audio/mpeg"/></audio>):
-                                        (message.message.typeFile === "video" ? (<video width="320" height="240" controls><source src={message.message.urlFile} type="video/mp4"/></video>):
-                                        (<object className='chatbox-message-files' data={message.message.urlFile} type="application/pdf" width="320" height="240">
-                                        <p>Alternative text - include a link <a href={message.message.urlFile}>to the PDF!</a></p></object>))))
+                                        (message.type === "string") ? (<span className='chatbox-message-incoming'>{decrypted}{/*<span className='chatbox-message-timer'>{message.date}</span>*/}</span>):
+                                        (decrypted.typeFile === "image" ? (<img className='chatbox-message-files' src={decrypted.urlFile} alt=""></img>):
+                                        (decrypted.typeFile === "audio" ? (<audio className='chatbox-message-files' controls><source src={decrypted.urlFile} type="audio/mpeg"/></audio>):
+                                        (decrypted.typeFile === "video" ? (<video width="320" height="240" controls><source src={decrypted.urlFile} type="video/mp4"/></video>):
+                                        (<object className='chatbox-message-files' data={decrypted.urlFile} type="application/pdf" width="320" height="240">
+                                        <p>Alternative text - include a link <a href={decrypted.urlFile}>to the PDF!</a></p></object>))))
                                     }
                                 </div>
                             )
@@ -173,6 +248,14 @@ const Chatbox = () => {
             <form onSubmit={onSend} className='chatbox-form-container'>
                 <div className='chatbox-form-div'>
                     <div onClick={() => {
+                                        setReminderBox(true);
+                                        setShowModal(true);
+                                    }} 
+                            className='chatbox-form-button'>
+                        <IoMdTimer className='chatbox-send'/>
+                    </div>
+                    <div onClick={() => {
+                                        setReminderBox(false);
                                         setShowModal(true);
                                     }} 
                             className='chatbox-form-button'>
