@@ -10,6 +10,7 @@ import { db } from '../firebase/firebase';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { toast } from "react-toastify";
 import ChatIndex from './ChatIndex';
+import { useAsyncEffect } from 'use-async-effect';
 
 const Sidebar = () => {
     const [searchValue, setSearchValue] = useState("");
@@ -93,28 +94,34 @@ const Sidebar = () => {
     }
 
     const allChatUser = async () => {
-        console.log("cargar usuarios");
-        const queryChat1 = query(collection(db, "chats"), where("user1.uid", "==", userCredential.uid));
-        const queryChat2 = query(collection(db, "chats"), where("user2.uid", "==", userCredential.uid));
-        const response1 = await getDocs(queryChat1);
-        const response2 = await getDocs(queryChat2);
-        let listContact = [];
-        if(response1.size !== 0){
-            response1.forEach((doc) => {
-                listContact.push(doc);
-            });
-        } 
-        if(response2.size !== 0){
-            response2.forEach((doc) => {
-                listContact.push(doc);
-            });
+        if(userCredential.uid){
+            console.log("cargar usuarios");
+            const queryChat1 = query(collection(db, "chats"), where("user1.uid", "==", userCredential.uid));
+            const queryChat2 = query(collection(db, "chats"), where("user2.uid", "==", userCredential.uid));
+            const response1 = await getDocs(queryChat1);
+            const response2 = await getDocs(queryChat2);
+            let listContact = [];
+            if(response1.size !== 0){
+                response1.forEach((doc) => {
+                    listContact.push(doc);
+                });
+            } 
+            if(response2.size !== 0){
+                response2.forEach((doc) => {
+                    listContact.push(doc);
+                });
+            }
+            console.log("cargar usuarios");
+            setListChats(listContact);
         }
-        console.log("cargar usuarios");
-        setListChats(listContact);
     }
 
+    useAsyncEffect(()=>{
+        allChatUser();
+    },[]);
+
     return (
-        <div onLoad={allChatUser} className='Sidebar'>
+        <div className='Sidebar'>
             <div className='sidebar-info-container'>
                 <div className='sidebar-image-container'>
                     <img className='sidebar-image-perfil' src={userCredential?.photoURL} alt="Perfil" />
