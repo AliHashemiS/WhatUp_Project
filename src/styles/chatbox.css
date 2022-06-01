@@ -56,6 +56,7 @@
     padding: 0.5em;
     margin: 0.5em;
     color: white;
+    max-width: 40em;
 }
 
 .chatbox-message-files{
@@ -109,16 +110,39 @@
 
 .chatbox-form-div{
     display: flex;
+    flex-direction: column;
     width: 100%;
     padding: 0.3em;
     border-radius: 0.5em;
     background-color: rgb(49, 74, 88);
 }
 
+.chatbox-send-message{
+    display: flex;
+}
+
+.chatbox-close-edit{
+    color: white;
+    font-size: 1.8em;
+    cursor: pointer;
+}
+
+.chatbox-snap-edit{
+    background-color: rgba(175, 175, 175, 0.3);
+    width: 95%;
+    padding: 0.8em;
+    border-radius: 0.5em;
+}
+
+.chatbox-edit-div-x{
+    display: flex;
+    align-items: center;
+}
+
 .chatbox-send{
     color: white;
     font-size: 1.8em;
-}
+} 
 
 .chatbox-chat-container{
     display: flex;
@@ -145,6 +169,90 @@
     font-size: 0.7em;
 }
 
+.chatbox-delete-edit{
+    display: flex;
+    color: white;
+    font-size: 1.3em;
+    margin: 0.9em 0.2em;
+    cursor: pointer; 
+}
+
+.chatbox-block-user{
+    display: flex;
+    color: white;
+    font-size: 1.3em;
+    margin: 0em 1em;
+    cursor: pointer; 
+    height: 100%;
+}
+
+.chatbox-search-filter{
+    display: flex;
+    color: white;
+    font-size: 1.3em;
+    margin: 0em 0.3em;
+    cursor: pointer; 
+    height: 100%;
+}
+
+.chatbox-delete-filter{
+    display: flex;
+    color: white;
+    font-size: 1.3em;
+    margin: 0em 0.3em;
+    cursor: pointer; 
+    height: 100%;
+}
+
+.chatbox-edit-div{
+    display: flex;
+    color: white;
+    justify-content: space-between;
+    margin: 0.5em 1em;
+}
+
+.chatbox-info-data{
+    display: flex;
+    color: white;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbox-info-photo-name{
+    display: flex;
+    flex-direction: row;
+}
+
+.chatbox-info-pn{
+    display: flex;
+}
+
+.chatbox-block-chat{
+    display: flex;
+    padding: 0.6em;
+    justify-content: center;
+    color: white;
+}
+
+.chatbox-filter-setting{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 62%;
+}
+
+.chatbox-search-input{
+    display: flex;
+    color: white;
+    outline: none;
+    background-color: rgba(175, 175, 175, 0.3);
+    border-color: transparent;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    margin: 0em 0.3em;
+}
+
 @media screen and (max-width: 760px) {
     .chatbox-chat{
         font-size: 10em;
@@ -155,6 +263,9 @@
     .chatbox-send {
         font-size: 1.3em; 
         margin: 0em;
+    }
+    .chatbox-close-edit{
+        font-size: 1.3em; 
     }
 }
 
@@ -168,5 +279,8 @@
     .chatbox-send {
         font-size: 1.3em; 
         margin: 0em;
+    }
+    .chatbox-close-edit{
+        font-size: 1.3em; 
     }
 }
