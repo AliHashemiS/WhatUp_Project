@@ -7,7 +7,7 @@ import '../styles/drop-file-input.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Datetime from './Datetime';
 
-const Modals = ({open, onClose, onSetFiles, uploadValue, messageFile, onSendFiles, functionReminder, dateReminder, reminder}) => {
+const Modals = ({open, onClose, onSetFiles, uploadValue, messageFile, onSendFiles, functionReminder, functionDestroy, dateReminder, reminder, destroy}) => {
 
     const [listFiles, setListFiles] = useState([]);
     //const [value, setValue] = useState("");
@@ -40,7 +40,7 @@ const Modals = ({open, onClose, onSetFiles, uploadValue, messageFile, onSendFile
                     <Modal.Title>Upload Files</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='d-flex align-items-center flex-column'>
-                    {reminder === true ? 
+                    {reminder || destroy === true ? 
                     (<>
                         <Datetime dateReminder={dateReminder} className="drop-file-form-input"/>
                     </>):
@@ -60,6 +60,9 @@ const Modals = ({open, onClose, onSetFiles, uploadValue, messageFile, onSendFile
                                 if(reminder){
                                     onClose(false); 
                                     functionReminder();
+                                }else if(destroy) {
+                                    onClose(false); 
+                                    functionDestroy();
                                 }else{
                                     onSend();
                                 }
