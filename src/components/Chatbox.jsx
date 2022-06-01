@@ -18,7 +18,7 @@ import Datetime from './Datetime';
 const Chatbox = () => {
     const [value, setValue] = useState("");
     const [searchValue, setSearchValue] = useState("");
-    const [dateSearchValue, setDateSearchValue] = useState(new Date());
+    const [dateSearchValue, setDateSearchValue] = useState("");
     const [reminderBox, setReminderBox] = useState(false);
     const [destroyBox, setDestroyBox] = useState(false);
     const [listMessage, setlistMessage] = useState([]);
@@ -649,7 +649,7 @@ const Chatbox = () => {
                         type='text' className='chatbox-search-input' placeholder='Enviar mensaje'/>
                         
                         <Datetime dateReminder={setDateSearchValue} className="drop-file-form-input" styles={{color:"white"}}/>
-                        <RiDeleteBack2Line className='chatbox-delete-filter' onClick={() => {setDateSearchValue(null); setSearchValue("")}}/>
+                        <RiDeleteBack2Line className='chatbox-delete-filter' onClick={() => {setDateSearchValue(""); setSearchValue("")}}/>
                         <RiSearchLine className='chatbox-search-filter' onClick={() => messageBrowser()}/>
                     </div>
 
@@ -680,7 +680,7 @@ const Chatbox = () => {
                         type='text' className='chatbox-search-input' placeholder='Enviar mensaje'/>
                         
                         <Datetime dateReminder={setDateSearchValue} className="drop-file-form-input" styles={{color:"white"}}/>
-                        <RiDeleteBack2Line className='chatbox-delete-filter' onClick={() => {setDateSearchValue(null); setSearchValue("")}}/>
+                        <RiDeleteBack2Line className='chatbox-delete-filter' onClick={() => {setDateSearchValue(""); setSearchValue("")}}/>
                         <RiSearchLine className='chatbox-search-filter' onClick={() => messageBrowser()}/>
                     </div>
 
