@@ -6,7 +6,6 @@ export const googleSignIn = () => async (dispatch) => {
 
   const provider = new GoogleAuthProvider();
   const userCredential = await signInWithPopup(auth, provider);
-  console.log(userCredential);
 
   const q = query(
     collection(db, 'users'),
@@ -36,6 +35,11 @@ export const googleSignIn = () => async (dispatch) => {
       name: userCredential.user.displayName,
       photoURL: userCredential.user.photoURL,
       creationDate: new Date().toISOString().slice(0, 10),
+      numbMessage: 0,
+      numbImage: 0,
+      numbVideo: 0,
+      numbAudio: 0,
+      numbPDF: 0,
     };
   }
   await setDoc(doc(db, 'users', user.uid), user);
@@ -45,9 +49,7 @@ export const googleSignIn = () => async (dispatch) => {
 export const getSession = (id) => async (dispatch) => {
   try {
     const userDocRef = doc(db, 'users', id);
-    console.log(userDocRef);
     const user = await getDoc(userDocRef);
-    console.log(user);
     dispatch({ type: 'LOGIN_USER', payload: user.data() });
   } catch (error) {
     throw error;
