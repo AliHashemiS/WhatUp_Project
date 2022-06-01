@@ -124,6 +124,19 @@
     cursor: pointer;
 }
 
+.sidebar-filterinput-container-info{
+    display: flex;
+    flex-direction: column;
+    color: white;
+    padding: 0.8em 0em;
+}
+
+.sidebar-filterinput-container-titulo{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
 @media screen and (max-width: 760px) {
     .sidebar-logout, .sidebar-chat {
         font-size: 1em;

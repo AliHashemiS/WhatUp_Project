@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { authActions, chatActions } from '../state';
+import { RiTimerLine } from "react-icons/ri";
 import { db } from '../firebase/firebase';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { toast } from "react-toastify";
@@ -15,6 +16,7 @@ import { useAsyncEffect } from 'use-async-effect';
 const Sidebar = () => {
     const [searchValue, setSearchValue] = useState("");
     const [createChat, setCreateChat] = useState("transparent");
+    const [showStatistics, setShowStatistics] = useState("transparent");
     const [listChats, setListChats] = useState([]);
     //const [listChatsRecover, setListChatsRecover] = useState([]);
     const userCredential = useSelector((state) => state.auth.userCredentials);
@@ -53,7 +55,7 @@ const Sidebar = () => {
 
     const onSearchUser = async () => {
         if(searchValue){
-            const queryUser = query(collection(db, "users"), where("email", "==", searchValue));
+            const queryUser = query(collection(db, "users"), where("email", "==", searchValue));    
             const response = await getDocs(queryUser);
             response.forEach((doc) => {
                 onCreateChat(doc.data());
@@ -85,6 +87,7 @@ const Sidebar = () => {
                 user1: userCredential,
                 user2: sender,
                 date: new Date().toISOString(),
+                block: false
             };
     
             const docRef = await addDoc(collection(db, 'chats'), chat);
@@ -94,8 +97,7 @@ const Sidebar = () => {
     }
 
     const allChatUser = async () => {
-        if(userCredential.uid){
-            console.log("cargar usuarios");
+        if(userCredential?.uid){
             const queryChat1 = query(collection(db, "chats"), where("user1.uid", "==", userCredential.uid));
             const queryChat2 = query(collection(db, "chats"), where("user2.uid", "==", userCredential.uid));
             const response1 = await getDocs(queryChat1);
@@ -111,7 +113,6 @@ const Sidebar = () => {
                     listContact.push(doc);
                 });
             }
-            console.log("cargar usuarios");
             setListChats(listContact);
         }
     }
@@ -140,8 +141,25 @@ const Sidebar = () => {
                         <ImUserPlus className='sidebar-chat'/>
                     </button>
                 </div> 
+
+                <div className='sidebar-chat-container'>
+                    <button onClick={() => {
+                                        if(showStatistics === "transparent"){
+                                            setShowStatistics("rgba(185, 185, 185, 0.3)");
+                                            
+                                        }else{
+                                            setShowStatistics("transparent");
+                                        }
+                                    }} 
+                            className='sidebar-chat-button'
+                            style={{backgroundColor:showStatistics}}>
+                        <RiTimerLine className='sidebar-chat'/>
+                    </button>
+                </div>
+
                 <div className='sidebar-logout-container'>
-                    <MdLogout onClick={() => {
+                    <MdLogout 
+                        onClick={() => {
                             logout();
                             navigate("/");
                         }}  
@@ -182,6 +200,25 @@ const Sidebar = () => {
                     </div>
                 </>):(<></>)
             }
+
+            {
+                (showStatistics !== "transparent") ?
+                (<>
+                    <div className='sidebar-filter-container'>
+                        <div className='sidebar-filterinput-container-info'>
+                            <span className='sidebar-filterinput-container-titulo'>Estadísticas de {userCredential.name}</span>
+                            <span>Cantidad de mensajes enviados: {userCredential.numbMessage}</span>
+                            <span>Cantidad de videos enviados: {userCredential.numbVideo}</span>
+                            <span>Cantidad de audios enviados: {userCredential.numbAudio}</span>
+                            <span>Cantidad de fotos enviados: {userCredential.numbImage}</span>
+                            <span>Cantidad de PDFs enviados: {userCredential.numbPDF}</span>
+                            <span>Usuario con mayor interacción: leandro.vasvega@gmail.com</span>
+                            <span>Usuario con menor interacción: juanlope13579@gmail.com</span>
+                        </div>
+                    </div>
+                </>):(<></>)
+            }
+
             <div className='sidebar-contacts-container'>
                 {listChats.map((chat, index) => {
                     if(chat.data().user1.uid !== userCredential.uid){
